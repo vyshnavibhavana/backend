@@ -2,7 +2,8 @@
 const UserModel = require("../models/user")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
-
+require('dotenv').config();
+const secret_key = process.env.JWT_SECRET
 
 
 const register = async(req,res)=>{
@@ -32,7 +33,7 @@ const login = async (req,res)=>{
     if(!validPassword){
         return res.json({message:"password is Incorrect"})
     }
-    const token = jwt.sign({email:user.email},"jwtkey",{expiresIn:"4h"});
+    const token = jwt.sign({email:user.email},secret_key,{expiresIn:"4h"});
     res.cookie("token",token)
     return res.json({status:true,message:"Login Successfull",token})
 };
@@ -43,7 +44,7 @@ const verifyUser =async (req,res,next)=>{
         if(!token){
             return res.json({status:false,message:"Auth Failed"})
         }
-        const decoded = await jwt.verify(token,"jwtkey")
+        const decoded = await jwt.verify(token,secret_key)
         req.user = decoded;
         next()
     } catch (error) {
