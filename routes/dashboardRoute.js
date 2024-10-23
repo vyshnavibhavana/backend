@@ -1,9 +1,10 @@
 const express = require('express');
-const { createTask } = require('../controllers/dashboard');
+const { createTask, getTaskData } = require('../controllers/dashboard');
 const router = express.Router();
 
 // Registration route
 router.post('/createTask', createTask);
+router.get('/getAllTaskData', getTaskData);
 
 
 
