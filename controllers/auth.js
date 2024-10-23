@@ -26,6 +26,7 @@ const register = async(req,res)=>{
 const login = async (req,res)=>{
     const {email,password} = req.body;
     const user = await UserModel.findOne({email})
+    console.log(user,"user")
     if(!user){
         return res.status(400).json({message:"User not found"})
     }
@@ -35,7 +36,7 @@ const login = async (req,res)=>{
     }
     const token = jwt.sign({email:user.email},secret_key,{expiresIn:"4h"});
     res.cookie("token",token)
-    return res.json({status:true,message:"Login Successfull",token})
+    return res.json({status:true,message:"Login Successfull",user,token})
 };
 
 const verifyUser =async (req,res,next)=>{
