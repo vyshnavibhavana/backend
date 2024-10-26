@@ -1,0 +1,26 @@
+version: '3'
+services:
+  # Web service (Node.js app)
+  web:
+    image: node:16 # Specify the Node.js version
+    working_dir: /app
+    volumes:
+      - .:/app # Mount the current directory to /app in the container
+    ports:
+      - "3000:3000" # Map port 3000 on host to port 3000 in container
+    command: npm start # Start the app using npm
+    depends_on:
+      - mongo # Ensures MongoDB starts first
+    environment:
+      - NODE_ENV=development
+
+  # MongoDB service
+  mongo:
+    image: mongo:4.2 # MongoDB version 4.2
+    ports:
+      - "27017:27017" # Map port 27017 on host to port 27017 in container
+    volumes:
+      - mongo-data:/data/db # Persist MongoDB data in a Docker volume
+
+volumes:
+  mongo-data:
