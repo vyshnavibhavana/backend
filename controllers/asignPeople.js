@@ -5,7 +5,7 @@ const RegisteredPeopleModel = require("../models/user");
 
 const assignPpl =  async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email,taskStatus } = req.body;
 
         // Check if email exists in the RegisteredPeople collection
         const registeredPerson = await RegisteredPeopleModel.findOne({ email });
@@ -17,6 +17,7 @@ const assignPpl =  async (req, res) => {
 
         // If email exists, set the name to the registered person's username
         const newAssignPerson = new AssignPplModel({
+            taskStatus,
             name: registeredPerson.username,
             email
         });
