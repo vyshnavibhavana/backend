@@ -29,8 +29,16 @@ const assignPpl =  async (req, res) => {
     }
 };
 
-
+const getassignpeople =  async (req, res) => {
+    try {
+        const assignedPeople = await AssignPplModel.find();
+        res.status(200).json(assignedPeople);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
 
 module.exports = {
-    assignPpl
+    assignPpl,
+    getassignpeople
 }

@@ -7,8 +7,13 @@ const AssignPplSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique:true
+        unique:false
     },
+    taskStatus: {
+        type:String,
+        required:true,
+        unique:false
+    }
    
 })
 const AssignPplModel = mongoose.model("assignpeople",AssignPplSchema)
