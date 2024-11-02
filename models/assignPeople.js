@@ -1,6 +1,10 @@
 const mongoose = require("mongoose")
 const AssignPplSchema = new mongoose.Schema({
-    name:{
+    username:{
+        type:String,
+        // required:true,
+    },
+    userid:{
         type:String,
         // required:true,
     },
@@ -12,7 +16,8 @@ const AssignPplSchema = new mongoose.Schema({
         type:String,
         required:false,
         unique:false
-    }
+    },
+
    
 })
 const AssignPplModel = mongoose.model("assignpeople",AssignPplSchema)

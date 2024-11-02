@@ -16,9 +16,11 @@ const assignPpl =  async (req, res) => {
         }
 
         // If email exists, set the name to the registered person's username
+        console.log(registeredPerson,"registeredPerson")
         const newAssignPerson = new AssignPplModel({
             taskStatus,
-            name: registeredPerson.username,
+            username: registeredPerson.username,
+            userid: registeredPerson._id,
             email
         });
 
