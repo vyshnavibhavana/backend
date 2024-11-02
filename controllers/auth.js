@@ -83,9 +83,25 @@ const updateUser = async (req, res) => {
     }
 };
 
+const logout = async (req, res) => {
+    try {
+        // Clear the JWT token from the cookie or local storage
+        res.clearCookie("token"); // Assumes JWT token is stored in a cookie named 'token'
+
+        return res.status(200).json({ status: true, message: "Logout successful" });
+    } catch (error) {
+        return res.status(500).json({ status: false, message: "Logout failed", error: error.message });
+    }
+};
+
+
+
+
+
 module.exports = {
     register,
     login,
     verifyUser,
-    updateUser
+    updateUser,
+    logout
 }
