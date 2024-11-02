@@ -53,8 +53,39 @@ const verifyUser =async (req,res,next)=>{
     }
 }
 
+const updateUser = async (req, res) => {
+    try {
+        const { email, username, password } = req.body;
+
+        // Find the user by email
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Update the fields if they are provided in the request body
+        if (username) {
+            user.username = username;
+        }
+
+        if (password) {
+            // Hash the new password before updating
+            const hashedPass = await bcrypt.hash(password, 10);
+            user.password = hashedPass;
+        }
+
+        // Save the updated user
+        await user.save();
+
+        return res.json({ status: true, message: "User updated successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
 module.exports = {
     register,
     login,
-    verifyUser
+    verifyUser,
+    updateUser
 }

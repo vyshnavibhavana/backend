@@ -34,60 +34,7 @@ const createTask = async (req, res) => {
 };
 
 
-//   const getTaskData=  async (req, res) => {
-//     try {
-//       const tasks = await Task.find({}); 
 
-//       const columnMapping = {
-//         'to-do': 'to-do' || 'To-Do',
-//         'In Progress': 'In Progress',
-//         'Completed': 'Done'
-//       };
-
-//     //   const columns = {
-//     //     Backlog: [],
-//     //     'to-do': [],
-//     //     'In Progress': [],
-//     //     Done: []
-//     //   };
-
-//       tasks.forEach(task => {
-//         console.log(task,"dsjhgs")
-//         const taskData = {
-//           id: task.assignee_id,
-//           title: task.title,
-//           status: task.status,
-//           priority: task.priority,
-//           due_date: task.due_date ? task.due_date.toISOString().split('T')[0] : null, // Format date
-//           checklist_count: task.checklist.length,
-//           completed_checklist_count: task.checklist.filter(item => item.completed).length,
-//           assignees: task.assignee_id ? [task.assignee_id] : [] // Modify this to get actual user names if needed
-//         };
-
-//         // console.log(taskData,"taskData")
-
-//         const columnName = columnMapping[task.status] || 'Backlog';
-//         console.log(columnName,"jdsfggfh")
-//         // columns[columnName].push(taskData);
-
-//         const response = {
-//             status: 'success',
-//             board: {
-//               id: taskData.id, // This can be dynamic based on your logic
-//               name: taskData.title,
-//               task:taskData
-
-//             }
-//           };
-
-//           res.json(response);
-//       });
-
-//     //   res.json(response);
-//     } catch (err) {
-//       res.status(500).json({ status: 'error', message: err.message });
-//     }
-//   };
 
 const getTaskData = async (req, res) => {
     try {
@@ -144,7 +91,80 @@ const getTaskData = async (req, res) => {
 }
 
 
+const getTaskSummaryData = async (req, res) => {
+  try {
+      const tasks = await Task.find({});
+
+      // Initialize counters for task statuses and priorities
+      const taskStatusCounts = {
+          Backlog: 0,
+          'To-Do': 0,
+          'In Progress': 0,
+          Completed: 0
+      };
+
+      const priorityCounts = {
+          Low: 0,
+          Moderate: 0,
+          High: 0,
+          'Due Date': 0
+      };
+
+      // Map statuses to their labels
+      const statusMapping = {
+          'to-do': 'To-Do',
+          'in-progress': 'In Progress',
+          'completed': 'Completed'
+      };
+
+      // Count tasks by status and priority
+      tasks.forEach(task => {
+          const statusLabel = statusMapping[task.status] || 'Backlog';
+          taskStatusCounts[statusLabel] += 1;
+
+          if (task.priority === 'Low') priorityCounts.Low += 1;
+          else if (task.priority === 'Moderate') priorityCounts.Moderate += 1;
+          else if (task.priority === 'High') priorityCounts.High += 1;
+          
+          // Count due date tasks if they have a due date
+          if (task.due_date) {
+              priorityCounts['Due Date'] += 1;
+          }
+      });
+
+      // Prepare response format
+      const response = {
+          status: 'success',
+          data: {
+              task: [
+                  { label: "Backlog Tasks", count: taskStatusCounts.Backlog },
+                  { label: "To-Do Tasks", count: taskStatusCounts['To-Do'] },
+                  { label: "Progress Tasks", count: taskStatusCounts['In Progress'] },
+                  { label: "Completed Tasks", count: taskStatusCounts.Completed }
+              ],
+              priority: [
+                  { label: "Low Priority", count: priorityCounts.Low },
+                  { label: "Moderate Priority", count: priorityCounts.Moderate },
+                  { label: "High Priority", count: priorityCounts.High },
+                  { label: "Due Date Tasks", count: priorityCounts['Due Date'] }
+              ]
+          }
+      };
+
+      res.status(200).json(response);
+  } catch (err) {
+      if (!res.headersSent) {
+          return res.status(500).json({ status: 'error', message: err.message });
+      }
+  }
+};
+
+
+
+
+
 module.exports = {
     createTask,
-    getTaskData
+    getTaskData,
+    getTaskSummaryData
 }
