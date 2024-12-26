@@ -23,7 +23,7 @@ mongoose.connect(process.env.MONGO_URI).then(()=>{
     console.log("connected to database")
 })
 app.use("/auth",router)
-app.use("/api",dashboardRoute)
+// app.use("/api",dashboardRoute)
 app.listen(port,()=>{
     console.log("server is running on port",port)
 })
