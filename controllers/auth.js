@@ -1,5 +1,6 @@
 
 const UserModel = require("../models/user")
+const InviteModel = require("../models/inviteEmail")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 require('dotenv').config();
@@ -83,6 +84,32 @@ const updateUser = async (req, res) => {
     }
 };
 
+const sendInvite =  async (req, res) => {
+    const { email } = req.body;
+  
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+  
+    try {
+      // Check if the user is registered
+      const user = await UserModel.findOne({ email });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      // Save invite data in Invite model
+      const newInvite = new InviteModel({ email });
+      await newInvite.save();
+  
+      return res.status(200).json({ message: 'User is registered and invite has been sent' });
+    } catch (err) {
+      console.error('Error:', err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+
 const logout = async (req, res) => {
     try {
         // Clear the JWT token from the cookie or local storage
@@ -103,5 +130,6 @@ module.exports = {
     login,
     verifyUser,
     updateUser,
+    sendInvite,
     logout
 }
