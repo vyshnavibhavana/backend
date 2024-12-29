@@ -5,6 +5,7 @@ require('dotenv').config();
 const port = process.env.PORT || 8000
 const cors = require("cors")
 const bodyParser = require("body-parser")
+const path = require('path');
 const mongoose = require("mongoose")
 const router = require("./routes/authRoute")
 const dashboardRoute = require("./routes/dashboardRoutes")
@@ -24,6 +25,9 @@ mongoose.connect(process.env.MONGO_URI).then(()=>{
 })
 app.use("/auth",router)
 app.use("/api",dashboardRoute)
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.listen(port,()=>{
     console.log("server is running on port",port)
 })
