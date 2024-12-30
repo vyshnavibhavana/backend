@@ -13,6 +13,8 @@ const DataSchema = new mongoose.Schema({
       url: { type: String, required: true },
     },
   ],
+  userId: {type: String},
+  folderId: {type: String},
   createdAt: {
     type: Date,
     default: Date.now,

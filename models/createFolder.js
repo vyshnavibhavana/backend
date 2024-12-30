@@ -2,6 +2,7 @@ const mongoose = require("mongoose")
 
 const folderSchema = new mongoose.Schema({
     folderName: { type: String},
+    formName: { type: String},
     createdAt: { type: Date, default: Date.now },
   });
 

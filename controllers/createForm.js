@@ -1,15 +1,15 @@
-const folderModel= require("../models/createFolder")
+const formModel= require("../models/createFolder")
 
 
-const createFolder = async (req, res) => {
-    const { folderName,formName } = req.body;
+const createForm = async (req, res) => {
+    const { folderName } = req.body;
   
     if (!folderName) {
       return res.status(400).json({ message: 'Folder name is required' });
     }
   
     try {
-      const newFolder = new folderModel({ folderName,formName });
+      const newFolder = new formModel({ folderName });
       await newFolder.save();
   
       return res.status(201).json({ message: 'Folder created successfully', folderName: newFolder });
@@ -19,9 +19,9 @@ const createFolder = async (req, res) => {
     }
   };
 
- const  getallFolders =  async (req, res) => {
+ const  getallForms =  async (req, res) => {
     try {
-      const folders = await folderModel.find();
+      const folders = await formModel.find();
       return res.status(200).json({ message: 'Folders retrieved successfully', folders });
     } catch (err) {
       console.error('Error:', err);
@@ -29,7 +29,7 @@ const createFolder = async (req, res) => {
     }
   };
 
-  const deleteFolders =  async (req, res) => {
+  const deleteForms =  async (req, res) => {
     const { id } = req.params;
   
     try {
@@ -47,7 +47,7 @@ const createFolder = async (req, res) => {
   };
 
   module.exports ={
-    createFolder,
-    getallFolders,
-    deleteFolders
+    createForm,
+    getallForms,
+    deleteForms
   }
