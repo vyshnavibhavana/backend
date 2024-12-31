@@ -9,6 +9,7 @@ const secret_key = process.env.JWT_SECRET
 const register = async(req,res)=>{
     const {username,email,password} = req.body;
     const user = await UserModel.findOne({email})
+    console.log("gdgd")
     if(user){
         return res.status(400).json({message:"Email already exists"})
     }
