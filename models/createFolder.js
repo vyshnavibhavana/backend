@@ -1,11 +1,22 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const folderSchema = new mongoose.Schema({
-    folderName: { type: String},
-    formName: { type: String},
-    userId: {type: String},
-    createdAt: { type: Date, default: Date.now },
-  });
+const FormDataSchema = new mongoose.Schema({
+  label: { type: String, required: true },
+  type: { type: String, required: true },
+  value: { type: mongoose.Schema.Types.Mixed, required: true }, 
+});
 
-  const Folder = mongoose.model('Folder', folderSchema);
-  module.exports = Folder
+const FormSchema = new mongoose.Schema({
+  formData: [FormDataSchema],
+  formName: { type: String, required: true },
+  id: { type: Number, required: true },
+});
+
+const FolderSchema = new mongoose.Schema({
+  folderName: { type: String, required: true },
+  folderId: { type: Number, unique: true },
+  form: [FormSchema], 
+  userId: { type: String, required: true },
+});
+
+module.exports = mongoose.model("Folder", FolderSchema);

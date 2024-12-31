@@ -1,24 +1,16 @@
 const mongoose = require('mongoose');
 
 const DataSchema = new mongoose.Schema({
-    text: [
-        {
-          type: mongoose.Schema.Types.Mixed, // This allows any kind of object
-          required: false, // Adjust this depending on whether it's mandatory
-        },
-      ],
-  images: [
+  formData: [
     {
-      originalName: { type: String, required: true },
-      url: { type: String, required: true },
+      label: { type: String, required: true },
+      value: { type: mongoose.Schema.Types.Mixed, required: true },
     },
   ],
-  userId: {type: String},
-  folderId: {type: String},
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  userId: { type: String, required: true },
+  folderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Folder' },
+  createdAt: { type: Date, default: Date.now },
+  completed: { type: Boolean, default: false }, // For completion status
 });
 
 module.exports = mongoose.model('Data', DataSchema);

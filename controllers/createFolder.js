@@ -1,33 +1,27 @@
-const folderModel= require("../models/createFolder")
 const Data = require('../models/formModel');
+const Folder = require('../models/createFolder');
 
 const createFolder = async (req, res) => {
-    const { folderName,formName,userId } = req.body;
-  
-    if (!folderName) {
-      return res.status(400).json({ message: 'Folder name is required' });
-    }
-  
-    try {
-      const newFolder = new folderModel({ folderName,formName,userId });
-      await newFolder.save();
-  
-      return res.status(201).json({ message: 'Folder created successfully', folderName: newFolder });
-    } catch (err) {
-      console.error('Error:', err);
-      res.status(500).json({ message: 'Server error' });
-    }
-  };
+  try {
+    const folderData = req.body;
+    const newFolder = new Folder(folderData);  // Use the Folder model
 
- const  getallFolders =  async (req, res) => {
-    try {
-      const folders = await folderModel.find();
-      return res.status(200).json({ message: 'Folders retrieved successfully', folders });
-    } catch (err) {
-      console.error('Error:', err);
-      res.status(500).json({ message: 'Server error' });
-    }
-  };
+    await newFolder.save();
+    res.status(201).json({ message: "Folder created successfully", folder: newFolder });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating folder", error: error.message });
+  }
+};
+
+//  const  getallFolders =  async (req, res) => {
+//     try {
+//       const folders = await Folder.find();
+//       return res.status(200).json({ message: 'Folders retrieved successfully', folders });
+//     } catch (err) {
+//       console.error('Error:', err);
+//       res.status(500).json({ message: 'Server error' });
+//     }
+//   };
 
   const deleteFolders =  async (req, res) => {
     const { id } = req.params;
@@ -159,13 +153,60 @@ const createFolder = async (req, res) => {
       res.status(500).json({ message: 'Error fetching folders', error });
     }
   };
-  
+
+const getFolderById = async (req, res) => {
+  try {
+    const { folderId } = req.params; // Extract folderId from URL params
+    const folder = await Folder.findOne({ folderId: folderId });
+
+    if (!folder) {
+      return res.status(404).json({ message: "Folder not found" });
+    }
+
+    res.status(200).json(folder);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving folder", error: error.message });
+  }
+};
+const deleteFolder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedFolder = await Folder.findOneAndDelete(id);
+
+    if (!deletedFolder) {
+      return res.status(404).json({ message: "Folder not found" });
+    }
+
+    res.status(200).json({ message: "Folder deleted successfully", folder: deletedFolder });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting folder", error: error.message });
+  }
+};
+const getAllFolders = async (req, res) => {
+  try {
+    const folders = await Folder.find(); // Fetch all folders from the database
+    res.status(200).json(folders);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving folders", error: error.message });
+  }
+};
+const deleteAllFolders = async (req, res) => {
+  try {
+    const deletedFolders = await Folder.deleteMany(); // Deletes all folders
+    res.status(200).json({ message: "All folders deleted successfully", deletedCount: deletedFolders.deletedCount });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting folders", error: error.message });
+  }
+};
   module.exports = { getFoldersAndFormData };
 
   
   module.exports ={
     createFolder,
-    getallFolders,
+    getFolderById,
+    deleteFolder,
+    getAllFolders,
+    deleteAllFolders,
     deleteFolders,
     getFoldersAndFormData,
     getFoldersAndFormDataByUserId
