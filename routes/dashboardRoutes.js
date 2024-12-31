@@ -1,5 +1,5 @@
 const express = require('express');
-const { createFolder, getallFolders, deleteFolders } = require('../controllers/createFolder');
+const { createFolder, getallFolders, deleteFolders, getFoldersAndFormData } = require('../controllers/createFolder');
 const router = express.Router();
 
 const multer = require('multer');
@@ -38,7 +38,7 @@ router.get('/folders', getallFolders);
 router.delete('/delete-folder/:id', deleteFolders);
 
 //craeteForm routes
-
+router.get('/get-folders', getFoldersAndFormData);
 
 
 

@@ -7,7 +7,7 @@ const Form = require('../models/formModel'); // Import the Form model
 const createForm = async (req, res) => {
     try {
         // Collecting form data
-        const { text } = req.body;
+        const { text,folderId,userId } = req.body;
         console.log(text,"text")
         
         // Collecting image data
@@ -20,7 +20,9 @@ const createForm = async (req, res) => {
         // Create a new Data entry
         const newData = new Form({
           text: text, // Assuming the text field is passed as a JSON string
-          images: images
+          images: images,
+          folderId,
+          userId
         });
 
 
