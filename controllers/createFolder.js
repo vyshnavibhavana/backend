@@ -116,7 +116,7 @@ const createFolder = async (req, res) => {
   
       res.status(200).json({
         message: 'Folders with linked data fetched successfully',
-        folders: foldersWithData,
+        foldersWithData,
       });
     } catch (error) {
       console.error('Error fetching folders with linked data:', error);
@@ -152,7 +152,7 @@ const createFolder = async (req, res) => {
   
       res.status(200).json({
         message: 'Folders with linked data fetched successfully',
-        folders: foldersWithData,
+        foldersWithData,
       });
     } catch (error) {
       console.error('Error fetching folders with linked data:', error);
