@@ -2,14 +2,14 @@ const folderModel= require("../models/createFolder")
 const Data = require('../models/formModel');
 
 const createFolder = async (req, res) => {
-    const { folderName,formName } = req.body;
+    const { folderName,formName,userId } = req.body;
   
     if (!folderName) {
       return res.status(400).json({ message: 'Folder name is required' });
     }
   
     try {
-      const newFolder = new folderModel({ folderName,formName });
+      const newFolder = new folderModel({ folderName,formName,userId });
       await newFolder.save();
   
       return res.status(201).json({ message: 'Folder created successfully', folderName: newFolder });
@@ -123,9 +123,50 @@ const createFolder = async (req, res) => {
       res.status(500).json({ message: 'Error fetching folders', error });
     }
   };
+
+  const getFoldersAndFormDataByUserId = async (req, res) => {
+    try {
+      const { userId } = req.query; // Get userId from query parameters (or req.body if preferred)
+  
+      if (!userId) {
+        return res.status(400).json({ message: 'UserId is required' });
+      }
+  
+      // Fetch all folders created by the user
+      const folders = await folderModel.find({ userId }).lean();
+  
+      // Fetch all data created by the user
+      const data = await Data.find({ userId }).lean();
+  
+      // Map through folders and attach linked data
+      const foldersWithData = folders.map((folder) => {
+        // Find all data entries with matching folderId
+        const linkedData = data.filter((item) => String(item.folderId) === String(folder._id));
+  
+        // Return the folder object with linked data
+        return {
+          ...folder,
+          linkedData,
+        };
+      });
+  
+      res.status(200).json({
+        message: 'Folders with linked data fetched successfully',
+        folders: foldersWithData,
+      });
+    } catch (error) {
+      console.error('Error fetching folders with linked data:', error);
+      res.status(500).json({ message: 'Error fetching folders', error });
+    }
+  };
+  
+  module.exports = { getFoldersAndFormData };
+
+  
   module.exports ={
     createFolder,
     getallFolders,
     deleteFolders,
-    getFoldersAndFormData
+    getFoldersAndFormData,
+    getFoldersAndFormDataByUserId
   }
